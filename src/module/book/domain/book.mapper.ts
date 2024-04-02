@@ -10,6 +10,7 @@ export class BookMapper extends DbMapper<BookEntity, BookMongoEntity> {
 
     const mongoProps: MongoEntityProps<BookMongoEntity> = {
       ...entityProps,
+      stock: entityProps.stock.value,
       // add domain field here
     };
     return mongoProps;

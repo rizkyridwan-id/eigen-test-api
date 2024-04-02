@@ -2,11 +2,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { BaseMongoEntity } from 'src/core/base/domain/mongo-entity';
 
-@Schema({ collection: 'member' })
+@Schema({ collection: 'members' })
 export class MemberMongoEntity extends BaseMongoEntity<
   typeof MemberMongoEntity
 > {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
   @Prop({ required: true })

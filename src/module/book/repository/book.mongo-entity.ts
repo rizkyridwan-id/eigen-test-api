@@ -1,10 +1,26 @@
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { BaseMongoEntity } from 'src/core/base/domain/mongo-entity';
 
-@Schema({ collection: 'book' })
+@Schema({ collection: 'books' })
 export class BookMongoEntity extends BaseMongoEntity<typeof BookMongoEntity> {
-  // Put your schema here
+  @Prop({ required: true, unique: true })
+  code: string;
+
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
+  author: string;
+
+  @Prop({ required: true })
+  stock: number;
+
+  @Prop({ default: 0 })
+  stock_borrowed?: number;
+
+  @Prop({ required: true })
+  input_date: Date;
 }
 
 export const BookSchema = SchemaFactory.createForClass(BookMongoEntity);
