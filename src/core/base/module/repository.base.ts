@@ -121,9 +121,7 @@ export class BaseRepository<Entity, MongoEntity>
     identifier: FilterQuery<MongoEntity>,
     session?: ClientSession,
   ): Promise<Array<MongoEntity>> {
-    const result = await this.genericModel
-      .aggregate([{ $match: identifier }])
-      .session(session);
+    const result = await this.genericModel.find(identifier).session(session);
 
     return result.map((it) => it.toObject());
   }

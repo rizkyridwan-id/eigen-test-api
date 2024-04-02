@@ -1,4 +1,4 @@
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { BaseMongoEntity } from 'src/core/base/domain/mongo-entity';
 
@@ -6,7 +6,14 @@ import { BaseMongoEntity } from 'src/core/base/domain/mongo-entity';
 export class MemberMongoEntity extends BaseMongoEntity<
   typeof MemberMongoEntity
 > {
-  // Put your schema here
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  code: string;
+
+  @Prop()
+  input_date?: Date;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(MemberMongoEntity);

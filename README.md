@@ -17,6 +17,7 @@ PORT=3001
 
 DB_CONNECTION_URI=mongodb+srv://username:password@cluster.net/db_name
 ```
+> tips: recommended to use Mongo Atlas for easy MongoDB Server Setup.
 2. Install dependencies:
 ```shell
 npm i 

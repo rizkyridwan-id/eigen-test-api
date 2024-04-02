@@ -10,6 +10,7 @@ export class MemberMapper extends DbMapper<MemberEntity, MemberMongoEntity> {
 
     const mongoProps: MongoEntityProps<MemberMongoEntity> = {
       ...entityProps,
+      code: entityProps.code.value,
       // add domain field here
     };
     return mongoProps;

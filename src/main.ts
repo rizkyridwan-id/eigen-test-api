@@ -9,6 +9,7 @@ import * as ip from 'ip';
 import { CustomLogger } from './infra/logger/logger';
 import { AllExceptionFilter } from './core/base/http/base-http-exception.filter';
 import { DebugLoggerInterceptor } from './core/interceptor/debug-logger.interceptor';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const httpsMode = !!Number(process.env.HTTPS_MODE);
@@ -29,12 +30,21 @@ async function bootstrap() {
 
   app.use(helmet());
 
+  const options = new DocumentBuilder()
+    .setTitle('Eigen 3 API Test')
+    .setDescription('Eigen 3 Api Test. Book & Member Features.')
+    .setVersion('1.5')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api/docs', app, document);
+
   const port = process.env.PORT;
   const host = '0.0.0.0';
   const logger = new Logger('NestBoilerplate');
 
   await app.listen(port, host, () => {
-    logger.log(`Application Started at port: ${port}, httpsMode: ${httpsMode}`);
+    logger.log(`Application Started at port: ${port}`);
     if (process.env.MODE == 'DEVELOPMENT')
       logger.log(`Current IP: ${ip.address()}`);
   });
