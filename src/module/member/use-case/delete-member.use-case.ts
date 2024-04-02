@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { BaseUseCase, IUseCase } from 'src/core/base/module/use-case.base';
 
 import { PickUseCasePayload } from 'src/core/base/types/pick-use-case-payload.type';
@@ -18,21 +24,27 @@ export class DeleteMember extends BaseUseCase implements IUseCase<null> {
   }
 
   public async execute({ _id }: TDeleteMemberPayload): Promise<ResponseDto> {
-    const _idValue = new ObjectIdVO(_id).valueConverted;
-    const member = await this.memberRepository.findOne({
-      _id: _idValue,
-    });
+    try {
+      const _idValue = new ObjectIdVO(_id).valueConverted;
+      const member = await this.memberRepository.findOne({
+        _id: _idValue,
+      });
 
-    if (!member) throw new NotFoundException('Member not found.');
+      if (!member) throw new NotFoundException('Member not found.');
 
-    // TODO check borrowed book here.
+      // TODO check borrowed book here.
 
-    await this.memberRepository.delete({ _id: _idValue });
+      await this.memberRepository.delete({ _id: _idValue });
 
-    return new ResponseDto({
-      status: HttpStatus.OK,
-      data: {},
-      message: 'Member deleted.',
-    });
+      return new ResponseDto({
+        status: HttpStatus.OK,
+        data: {},
+        message: 'Member deleted.',
+      });
+    } catch (e) {
+      this.logger.error(e.message);
+      if (e instanceof HttpException) throw e;
+      throw new InternalServerErrorException('Internal server error.');
+    }
   }
 }

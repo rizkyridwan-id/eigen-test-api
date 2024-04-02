@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { BaseUseCase, IUseCase } from 'src/core/base/module/use-case.base';
 
 import { PickUseCasePayload } from 'src/core/base/types/pick-use-case-payload.type';
@@ -31,17 +37,26 @@ export class UpdateMember
     _id,
     data,
   }: TUpdateMemberPayload): Promise<TUpdateMemberResponse> {
-    const _idValue = new ObjectIdVO(_id).valueConverted;
-    const member = await this.memberRepository.findOne({
-      _id: _idValue,
-    });
+    try {
+      const _idValue = new ObjectIdVO(_id).valueConverted;
+      const member = await this.memberRepository.findOne({
+        _id: _idValue,
+      });
 
-    if (!member) throw new NotFoundException('Member not found.');
+      if (!member) throw new NotFoundException('Member not found.');
 
-    await this.memberRepository.update({ _id: _idValue }, { name: data.name });
-    return new ResponseDto({
-      status: HttpStatus.OK,
-      data: new IdResponseDTO(_idValue),
-    });
+      await this.memberRepository.update(
+        { _id: _idValue },
+        { name: data.name },
+      );
+      return new ResponseDto({
+        status: HttpStatus.OK,
+        data: new IdResponseDTO(_idValue),
+      });
+    } catch (e) {
+      this.logger.error(e.message);
+      if (e instanceof HttpException) throw e;
+      throw new InternalServerErrorException('Internal server error.');
+    }
   }
 }
