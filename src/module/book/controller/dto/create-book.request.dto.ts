@@ -11,6 +11,6 @@ export class CreateBookRequestDto {
   @IsRequiredString()
   author: string;
 
-  @IsRequiredNumber()
+  @IsRequiredNumber(1)
   stock: number;
 }

@@ -1,5 +1,5 @@
 export type TStringInput = {
   uppercase?: boolean;
   isArray?: boolean;
-  example?: string;
+  example?: string | string[];
 };

@@ -14,6 +14,9 @@ export class MemberMongoEntity extends BaseMongoEntity<
 
   @Prop()
   input_date?: Date;
+
+  @Prop()
+  penalized_date?: Date;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(MemberMongoEntity);
