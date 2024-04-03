@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { MemberRepositoryPort } from 'src/port/repository/member.repository.port';
+import { FilterQuery, Model } from 'mongoose';
+import {
+  IFindMemberWithBookBorrowed,
+  MemberRepositoryPort,
+} from 'src/port/repository/member.repository.port';
 import { MemberMongoEntity, MemberDocument } from './member.mongo-entity';
 
 import { MemberEntity } from '../domain/member.entity';
@@ -23,5 +26,43 @@ export class MemberRepository
 
   __init__(): void {
     //this just a boilerplate, you can delete it
+  }
+
+  async findMemberWithBookBorrowed(
+    identifier: FilterQuery<MemberMongoEntity>,
+  ): Promise<IFindMemberWithBookBorrowed[]> {
+    const aggregateResult = await this.MemberModel.aggregate([
+      {
+        $match: identifier,
+      },
+      {
+        $lookup: {
+          from: 'borrowings',
+          let: { memberId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$memberId', '$member_id'],
+                },
+                is_returned: false,
+              },
+            },
+          ],
+          as: 'borrowings',
+        },
+      },
+      {
+        $project: {
+          name: '$name',
+          code: '$code',
+          input_date: '$input_date',
+          penalized_date: '$penalized_date',
+          book_borrowed: { $size: '$borrowings' },
+        },
+      },
+    ]);
+
+    return aggregateResult as IFindMemberWithBookBorrowed[];
   }
 }

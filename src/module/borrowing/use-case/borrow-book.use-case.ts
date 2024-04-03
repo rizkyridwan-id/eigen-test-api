@@ -159,7 +159,7 @@ export class BorrowBook
           );
         }
 
-        await this.borrowingRepository.saveMany(borrowingEntities);
+        await this.borrowingRepository.saveMany(borrowingEntities, session);
       });
 
       return {

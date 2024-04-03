@@ -31,6 +31,11 @@ export class BorrowingMongoEntity extends BaseMongoEntity<
 
 export const BorrowingSchema =
   SchemaFactory.createForClass(BorrowingMongoEntity);
+BorrowingSchema.index(
+  { kode_member: 1, is_returned: 1, due_date: -1 },
+  { name: 'Member Borrow Index' },
+);
+
 export const BorrowingModel = [
   { name: BorrowingMongoEntity.name, schema: BorrowingSchema },
 ];

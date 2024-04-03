@@ -4,13 +4,16 @@ import { BaseUseCase, IUseCase } from 'src/core/base/module/use-case.base';
 import { PickUseCasePayload } from 'src/core/base/types/pick-use-case-payload.type';
 import { GetMemberRequestDto } from '../controller/dto/get-member.request.dto';
 import { InjectMemberRepository } from '../repository/member.repository.provider';
-import { MemberRepositoryPort } from 'src/port/repository/member.repository.port';
+import {
+  IFindMemberWithBookBorrowed,
+  MemberRepositoryPort,
+} from 'src/port/repository/member.repository.port';
 import { MemberMongoEntity } from '../repository/member.mongo-entity';
 import { FilterQuery } from 'mongoose';
 import { ResponseDto } from 'src/core/base/http/response.dto.base';
 
 type TGetMemberPayload = PickUseCasePayload<GetMemberRequestDto, 'data'>;
-type TGetMemberResponse = ResponseDto<MemberMongoEntity[]>;
+type TGetMemberResponse = ResponseDto<IFindMemberWithBookBorrowed[]>;
 
 @Injectable()
 export class GetMember
@@ -28,7 +31,8 @@ export class GetMember
   }: TGetMemberPayload): Promise<TGetMemberResponse> {
     const wherePayload = this._buildWherePayload(data);
 
-    const members = await this.memberRepository.findBy(wherePayload);
+    const members =
+      await this.memberRepository.findMemberWithBookBorrowed(wherePayload);
     return new ResponseDto({ status: HttpStatus.OK, data: members });
   }
 

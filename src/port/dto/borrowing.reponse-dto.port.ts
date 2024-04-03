@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 export interface IDetailReceiptBorrowBook {
   name: string;
   book_names: string[];
@@ -7,4 +9,9 @@ export interface IDetailReceiptBorrowBook {
 
 export interface IBorrowBookResponse {
   receipt: IDetailReceiptBorrowBook;
+}
+
+export interface IReturnBookResponse {
+  book_ids: Types.ObjectId[];
+  is_penalized: boolean;
 }
