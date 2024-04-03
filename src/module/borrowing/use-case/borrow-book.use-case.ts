@@ -81,7 +81,7 @@ export class BorrowBook
       });
     } catch (e) {
       if (e instanceof HttpException) throw e;
-      this.logger.error(e);
+      this.logger.error(e.message);
       throw new InternalServerErrorException('Internal server error.');
     } finally {
       await session.endSession();
@@ -136,6 +136,7 @@ export class BorrowBook
           const bookData = await this.bookRepository.findOne({
             _id: bookIdVO.valueConverted,
           });
+
           if (!bookData)
             throw new UnprocessableEntityException('Book not found.');
           if (!bookData.stock)
